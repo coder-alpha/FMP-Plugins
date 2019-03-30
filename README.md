@@ -1,6 +1,5 @@
 FMP-Plugins
 ===================
-[![FMoviesPlus.bundle](https://img.shields.io/github/release/coder-alpha/FMoviesPlus.bundle.svg?style=flat)](https://github.com/coder-alpha/FMoviesPlus.bundle/releases)
 [![Plex Wiki](https://img.shields.io/badge/Plex%20Forums-FMoviesPlus-E5A00D.svg?style=flat)](https://github.com/coder-alpha/FMoviesPlus.bundle/wiki)
 
 **Note:** The author of this plugin has no affiliation with any of the sites or the owners of the content that it indexes.
@@ -29,13 +28,13 @@ Resolvers
 
 | S.No.   |	Resolver	|	Streaming	|	Downloading	|	Quality				          |
 |	:---:		|	:---:		  |	:---:		  |	:---:		    |	:---:				            |
-| 1.      |	---	|	✔         |	✔			     |                         |
+| 1.      |	---	      |	✔         |	✔			     | ---                     |
 
 Proxies
 
 | S.No.   |	Proxy   	|	SSL       |
 |	:---:		|	:---:		  |	:---:		  |
-| 1.      |	---	|	✔         |
+| 1.      |	---	      |	✔         |
 
 
 
