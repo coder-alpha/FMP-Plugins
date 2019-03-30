@@ -19,19 +19,24 @@ How to Install ?
 =================
 To Install a plugin, simply download and copy the file into your FMP installation under its matching directory located under ..\FMoviesPlus.bundle\Contents\Libraries\Shared\resources\lib\ and restart PMS for the plugin to get loaded. The new support plugin should then be visible via the FMP menu > Options > Interface Options >
 
+Providers
 
-=================
-|	Provider	|	Streaming	|	Downloading	|	Extras				|
-|	:---:		|	:---:		|	:---:		|	:---:				|
-|	Einthusan	|	✔			|	✔			| Trailer, Music Videos	|
+| S.No.   |	Provider	|	Streaming	|	Downloading	|	Extras				          |
+|	:---:		|	:---:		  |	:---:		  |	:---:		    |	:---:				            |
+| 1.      |	Einthusan	|	✔         |	✔			     | Trailer, Music Videos	 |
 
-=================
-|	Resolver	|	Streaming	|	Downloading	|	Quality				|
-|	:---:		|	:---:		|	:---:		|	:---:				|
+Resolvers
 
-=================
-|	Proxy		|	SSL			|
-|	:---:		|	:---:		|
+| S.No.   |	Resolver	|	Streaming	|	Downloading	|	Quality				          |
+|	:---:		|	:---:		  |	:---:		  |	:---:		    |	:---:				            |
+| 1.      |	---	|	✔         |	✔			     |                         |
+
+Proxies
+
+| S.No.   |	Proxy   	|	SSL       |
+|	:---:		|	:---:		  |	:---:		  |
+| 1.      |	---	|	✔         |
+
 
 
 Donate & Support
