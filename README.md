@@ -20,9 +20,9 @@ To Install a plugin, simply download and copy the file into your FMP installatio
 
 Providers
 
-| S.No.   |	Provider	|	Streaming	|	Downloading	|	Extras				          |
-|	:---:		|	:---:		  |	:---:		  |	:---:		    |	:---:				            |
-| 1.      |	Einthusan	|	✔         |	✔			     | Trailer, Music Videos	 |
+| S.No.   |	Provider	| Desc.     |	Streaming	|	Downloading	|	Extras				          |
+|	:---:		|	:---:		  | :---:     |	:---:		  |	:---:		    |	:---:				            |
+| 1.      |	[Einthusan](https://einthusan.tv) (Movies)	| Indian language, English subtitled  |	✔         |	✔			     | Trailer, Music Videos	 |
 
 Resolvers
 
