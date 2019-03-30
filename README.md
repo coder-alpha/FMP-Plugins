@@ -16,7 +16,7 @@ There are 3 types of support plugins.
 
 How to Install ?
 =================
-To Install a plugin, simply download and copy the file into your FMP installation under its matching directory located under ..\FMoviesPlus.bundle\Contents\Libraries\Shared\resources\lib\ and restart PMS for the plugin to get loaded. The new support plugin should then be visible via the FMP menu > Options > Interface Options >
+To Install a plugin, simply download and copy the file into your FMP installation under its matching directory located under `..\FMoviesPlus.bundle\Contents\Libraries\Shared\resources\lib\` and restart PMS for the plugin to get loaded. The new support plugin should then be visible via the FMP menu > Options > Interface Options >
 
 Providers
 
