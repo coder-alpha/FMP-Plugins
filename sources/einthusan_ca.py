@@ -36,7 +36,10 @@ try:
 except:
 	pass
 
-USER_AGENT = client.randomagent()
+try:
+	USER_AGENT = client.randomagent()
+except:
+	USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0"
 
 name = 'Einthusan'
 loggertxt = []
@@ -232,6 +235,8 @@ class source:
 				log('FAIL','get_sources','url == None. Could not find a matching title: %s' % cleantitle.title_from_key(key), dolog=not testing)
 				log('INFO', 'get_sources', 'Completed')
 				return sources
+				
+			REMAP_TYPE = {'trailer':'Trailer', 'feature_trailer':'Trailer', 'theatrical_trailer':'Trailer', 'behind_the_scenes':'Behind the scenes', 'deleted_scene':'Deleted Scenes', 'featurette':'Featurette', 'featured_box':'Featurette', 'music-video':'Music Video', 'clip':'Misc.'}
 			
 			year = None
 			episode = None
@@ -241,7 +246,7 @@ class source:
 			data = urlparse.parse_qs(url)
 			data = dict([(i, data[i][0]) if data[i] else (i, '') for i in data])
 			title = data['tvshowtitle'] if 'tvshowtitle' in data else data['title']
-			title = cleantitle.get(title)
+			title = cleantitle.simpletitle(title)
 			try:
 				year = re.findall('(\d{4})', data['premiered'])[0] if 'tvshowtitle' in data else data['year']
 			except:
@@ -250,7 +255,12 @@ class source:
 				except:
 					year = None
 			
-			queries = ['%s+%s' % (title, year), title]
+			title_s = title.split(' ')
+			queries = []
+			for ts in range(len(title_s)):
+				titles = ('+'.join(str(x) for x in title_s[:len(title_s)-ts]))
+				queries.append('%s+%s' % (titles, year))
+				queries.append(titles)
 			rs = []
 			
 			for q in queries:
@@ -295,7 +305,10 @@ class source:
 					poster = r[3]
 					page_url = r[2]
 					eindata1,htm = GetEinthusanData(page_url)
-					eindata1 = json.loads(eindata1)
+					eindata1 = json.loads(json.dumps(eindata1))
+					
+					log('INFO','get_sources-4-A', 'GetEinthusanData: %s' % eindata1)
+					
 					video_urls.append(eindata1['MP4Link'])
 					video_urls.append(eindata1['HLSLink'])
 					
@@ -308,6 +321,7 @@ class source:
 									if 'youtube.com' in match:
 										match = match.replace('embed/','watch?v=')
 										trailers.append(match)
+										log('INFO','get_sources-4-B', 'trailers: %s' % match)
 								except:
 									pass
 						except Exception as e:
@@ -318,6 +332,7 @@ class source:
 							musicblock = client.parseDOM(htm, 'section', attrs = {'id': 'UICompactMovieClipList'})[0]
 							musicblock = client.parseDOM(musicblock, 'li')
 							music_vids = []
+							locx = None
 							for block in musicblock:
 								try:
 									music_vids_s = []
@@ -326,9 +341,15 @@ class source:
 									titlex = client.parseDOM(block, 'a', attrs = {'class': 'title'})[0]
 									titlex = client.parseDOM(titlex, 'h5')[0]
 									eindata1,htm1 = GetEinthusanData(locx)
-									eindata1 = json.loads(eindata1)
-									music_vids_s.append(eindata1['MP4Link'])
-									music_vids_s.append(eindata1['HLSLink'])
+									eindata1 = json.loads(json.dumps(eindata1))
+									log('INFO','get_sources-4-C', 'GetEinthusanData: %s' % eindata1)
+									type = eindata1['type']
+									if type in REMAP_TYPE.keys():
+										type = REMAP_TYPE[type]
+									else:
+										type = REMAP_TYPE['clip']
+									music_vids_s.append([eindata1['MP4Link'], type])
+									music_vids_s.append([eindata1['HLSLink'], type])
 									music_vids.append([titlex,thumbx,music_vids_s,locx])
 								except Exception as e:
 									log('FAIL','get_sources-5A','%s : %s' % (e, locx))
@@ -337,20 +358,29 @@ class source:
 					
 					for vid in trailers:
 						try:
-							links_m = resolvers.createMeta(vid, self.name, self.logo, '720p', links_m, key, poster=poster, vidtype='Trailer', testing=testing, page_url=page_url)
+							l = resolvers.createMeta(vid, self.name, self.logo, '720p', [], key, poster=poster, vidtype='Trailer', testing=testing, page_url=page_url)
+							if len(l) > 0:
+								control.setPartialSource(l[0],self.name)
+								links_m.append(l[0])
 						except:
 							log('FAIL','get_sources-6','Could not add: %s' % vid)
 							
 					for vid in music_vids:
 						try:
 							for v in vid[2]:
-								links_m = resolvers.createMeta(v, self.name, self.logo, '720p', links_m, key, poster=vid[1], vidtype='Music Video', testing=testing, txt=vid[0], page_url=vid[3])
+								l = resolvers.createMeta(v[0], self.name, self.logo, '720p', [], key, poster=vid[1], vidtype=v[1], testing=testing, txt=vid[0], page_url=vid[3])
+								if len(l) > 0:
+									control.setPartialSource(l[0],self.name)
+									links_m.append(l[0])
 						except:
-							log('FAIL','get_sources-7','Could not add: %s' % v)
+							log('FAIL','get_sources-7','Could not add: %s' % v[0])
 					
 					for vid in video_urls:
 						try:
-							links_m = resolvers.createMeta(vid, self.name, self.logo, quality, links_m, key, poster=poster, riptype=riptype, vidtype=vidtype, testing=testing, page_url=page_url)
+							l = resolvers.createMeta(vid, self.name, self.logo, quality, [], key, poster=poster, riptype=riptype, vidtype=vidtype, testing=testing, page_url=page_url)
+							if len(l) > 0:
+								control.setPartialSource(l[0],self.name)
+								links_m.append(l[0])
 						except:
 							log('FAIL','get_sources-8','Could not add: %s' % vid)
 				
@@ -488,12 +518,15 @@ def GetEinthusanData(url, debug=False):
 		id,lang = parseUrl(url)
 		cookieJar = cookielib.LWPCookieJar()
 		
-		headers=[('Origin','https://einthusan.tv'),('Referer','https://einthusan.tv/movie/browse/?lang=hindi'),('User-Agent',USER_AGENT)]
+		headers=[('Origin','https://einthusan.tv'),('Referer','https://einthusan.tv/movie/browse/?lang=%s' % lang),('User-Agent',USER_AGENT)]
 		
-		
+		type = 'movie'
 		if 'none/' in url:
-			mainurlajax='https://einthusan.tv/ajax/movie-clip/watch/music-video/none/%s/?lang=%s'%(id,lang)
-			mainurl='https://einthusan.tv/movie-clip/watch/music-video/none/%s/?lang=%s'%(id,lang)
+			type = url.split('watch/')[1].split('/')[0]
+			mainurlajax='https://einthusan.tv/ajax/movie-clip/watch/%s/none/%s/?lang=%s'%(type,id,lang)
+			mainurl='https://einthusan.tv/movie-clip/watch/%s/none/%s/?lang=%s'%(type,id,lang)
+			#mainurlajax='https://einthusan.tv/ajax/movie-clip/watch/music-video/none/%s/?lang=%s'%(id,lang)
+			#mainurl='https://einthusan.tv/movie-clip/watch/music-video/none/%s/?lang=%s'%(id,lang)
 		else:
 			mainurlajax='https://einthusan.tv/ajax/movie/watch/%s/?lang=%s'%(id,lang)
 			mainurl='https://einthusan.tv/movie/watch/%s/?lang=%s'%(id,lang)
@@ -516,6 +549,8 @@ def GetEinthusanData(url, debug=False):
 		
 		r=json.loads(rdata)["Data"]["EJLinks"]
 		data=(base64.b64decode(decodeEInth(r)))
+		data=json.loads(data)
+		data['type']=type
 
 		return data,htm
 	except Exception as err:
@@ -536,4 +571,4 @@ def Test2():
 	d = requestWithHeaders(url=url)
 	print (d)
 	
-#Test()
+# Test()
