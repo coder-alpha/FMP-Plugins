@@ -359,9 +359,9 @@ class source:
 					for vid in trailers:
 						try:
 							l = resolvers.createMeta(vid, self.name, self.logo, '720p', [], key, poster=poster, vidtype='Trailer', testing=testing, page_url=page_url)
-							if len(l) > 0:
-								control.setPartialSource(l[0],self.name)
-								links_m.append(l[0])
+							for ll in l:
+								if ll != None and 'key' in ll.keys():
+									links_m.append(ll)
 						except:
 							log('FAIL','get_sources-6','Could not add: %s' % vid)
 							
@@ -369,22 +369,24 @@ class source:
 						try:
 							for v in vid[2]:
 								l = resolvers.createMeta(v[0], self.name, self.logo, '720p', [], key, poster=vid[1], vidtype=v[1], testing=testing, txt=vid[0], page_url=vid[3])
-								if len(l) > 0:
-									control.setPartialSource(l[0],self.name)
-									links_m.append(l[0])
+								for ll in l:
+									if ll != None and 'key' in ll.keys():
+										links_m.append(ll)
 						except:
 							log('FAIL','get_sources-7','Could not add: %s' % v[0])
 					
 					for vid in video_urls:
 						try:
 							l = resolvers.createMeta(vid, self.name, self.logo, quality, [], key, poster=poster, riptype=riptype, vidtype=vidtype, testing=testing, page_url=page_url)
-							if len(l) > 0:
-								control.setPartialSource(l[0],self.name)
-								links_m.append(l[0])
+							for ll in l:
+								if ll != None and 'key' in ll.keys():
+									links_m.append(ll)
 						except:
 							log('FAIL','get_sources-8','Could not add: %s' % vid)
 				
-				sources += [l for l in links_m]
+				for l in links_m:
+					if l != None and 'key' in l.keys():
+						sources.append(l)
 			
 			if len(sources) == 0:
 				log('FAIL','get_sources','Could not find a matching title: %s' % cleantitle.title_from_key(key))
